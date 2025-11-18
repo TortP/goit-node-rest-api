@@ -1,68 +1,42 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { randomUUID } from 'crypto';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const contactsPath = path.join(__dirname, '..', 'db', 'contacts.json');
-
-const readContacts = async () => {
-  const data = await fs.readFile(contactsPath, 'utf8');
-  return JSON.parse(data);
-};
-
-const writeContacts = async contacts => {
-  const json = JSON.stringify(contacts, null, 2);
-  await fs.writeFile(contactsPath, json);
-};
+import Contact from '../models/contact.js';
 
 async function listContacts() {
-  return readContacts();
+  const rows = await Contact.findAll({ raw: true });
+  return rows;
 }
 
 async function getContactById(contactId) {
-  const contacts = await readContacts();
-  return contacts.find(({ id }) => id === contactId) ?? null;
+  const contact = await Contact.findByPk(contactId);
+  return contact ? contact.get({ plain: true }) : null;
 }
 
 async function removeContact(contactId) {
-  const contacts = await readContacts();
-  const index = contacts.findIndex(({ id }) => id === contactId);
-  if (index === -1) {
-    return null;
-  }
-
-  const [deletedContact] = contacts.splice(index, 1);
-  await writeContacts(contacts);
-  return deletedContact;
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
+  const data = contact.get({ plain: true });
+  await contact.destroy();
+  return data;
 }
 
 async function addContact(name, email, phone) {
-  const contacts = await readContacts();
-  const newContact = {
-    id: randomUUID(),
-    name,
-    email,
-    phone,
-  };
-
-  contacts.push(newContact);
-  await writeContacts(contacts);
-  return newContact;
+  const newContact = await Contact.create({ name, email, phone });
+  return newContact.get({ plain: true });
 }
 
 async function updateContact(contactId, body) {
-  const contacts = await readContacts();
-  const index = contacts.findIndex(({ id }) => id === contactId);
-  if (index === -1) {
-    return null;
-  }
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
+  await contact.update(body);
+  return contact.get({ plain: true });
+}
 
-  contacts[index] = { ...contacts[index], ...body };
-  await writeContacts(contacts);
-  return contacts[index];
+async function updateStatusContact(contactId, body) {
+  const contact = await Contact.findByPk(contactId);
+  if (!contact) return null;
+  // Only update the favorite field to be safe
+  const { favorite } = body;
+  await contact.update({ favorite });
+  return contact.get({ plain: true });
 }
 
 export {
@@ -71,5 +45,6 @@ export {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact,
 };
 
