@@ -26,7 +26,8 @@ const sequelize = new Sequelize(connectionString, {
 export async function connectAndSync() {
   try {
     await sequelize.authenticate();
-    const syncAlter = (process.env.DB_SYNC_ALTER ?? 'false').toLowerCase() === 'true';
+    const syncAlter =
+      (process.env.DB_SYNC_ALTER ?? 'false').toLowerCase() === 'true';
     if (syncAlter) {
       await sequelize.sync({ alter: true });
     } else {

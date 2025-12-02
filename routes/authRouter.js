@@ -20,6 +20,11 @@ authRouter.post('/register', validateBody(registerSchema), register);
 authRouter.post('/login', validateBody(loginSchema), login);
 authRouter.post('/logout', authenticate, logout);
 authRouter.get('/current', authenticate, current);
-authRouter.patch('/subscription', authenticate, validateBody(subscriptionSchema), updateSubscription);
+authRouter.patch(
+  '/subscription',
+  authenticate,
+  validateBody(subscriptionSchema),
+  updateSubscription
+);
 
 export default authRouter;

@@ -61,7 +61,10 @@ export const current = async (req, res, next) => {
 export const updateSubscription = async (req, res, next) => {
   try {
     const { subscription } = req.body;
-    const user = await authServices.updateSubscription(req.user.id, subscription);
+    const user = await authServices.updateSubscription(
+      req.user.id,
+      subscription
+    );
 
     if (!user) {
       return res.status(401).json({ message: 'Not authorized' });
