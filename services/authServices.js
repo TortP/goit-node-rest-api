@@ -1,6 +1,7 @@
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import gravatar from 'gravatar';
 
 const { JWT_SECRET = 'secret-key-please-change-in-env' } = process.env;
 
@@ -11,14 +12,18 @@ export const registerUser = async (email, password) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email, { s: '250', r: 'pg', d: 'retro' }, true);
+  
   const newUser = await User.create({
     email,
     password: hashedPassword,
+    avatarURL,
   });
 
   return {
     email: newUser.email,
     subscription: newUser.subscription,
+    avatarURL: newUser.avatarURL,
   };
 };
 
@@ -82,4 +87,16 @@ export const updateSubscription = async (userId, subscription) => {
 
 export const findUserById = async (userId) => {
   return await User.findByPk(userId);
+};
+
+export const updateAvatar = async (userId, avatarURL) => {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    return null;
+  }
+
+  await user.update({ avatarURL });
+  return {
+    avatarURL: user.avatarURL,
+  };
 };

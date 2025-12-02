@@ -3,5 +3,31 @@ node_modules/
 .idea
 .vscode
 .DS_Store
+temp/
+public/avatars/*
+!public/avatars/.gitkeep
 
 db/contacts.json
+ 
+# Test coverage reports
+coverage/
+
+# E2E/CI artifacts
+artifacts/
+
+# Logs and debug output
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Jest/ESLint caches
+.jest-cache/
+.jest/
+.eslintcache
+
+# NYC (Istanbul) coverage output
+.nyc_output/
+
+# OS-specific
+Thumbs.db
