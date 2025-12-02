@@ -1,0 +1,109 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "step": "register",
+      "status": 201,
+      "data": {
+        "user": {
+          "email": "test_1764670036944_97af89a0@example.com",
+          "subscription": "starter"
+        }
+      }
+    },
+    {
+      "step": "login",
+      "status": 200,
+      "data": {
+        "token": "eyJhbGciOiJI...",
+        "user": {
+          "email": "test_1764670036944_97af89a0@example.com",
+          "subscription": "starter"
+        }
+      }
+    },
+    {
+      "step": "current",
+      "status": 200,
+      "data": {
+        "email": "test_1764670036944_97af89a0@example.com",
+        "subscription": "starter"
+      }
+    },
+    {
+      "step": "contacts:create",
+      "status": 201,
+      "data": {
+        "id": "a99c632c-c04a-4e1d-bdea-8bcd0821f27c",
+        "favorite": false,
+        "name": "JS E2E",
+        "email": "c_test_1764670036944_97af89a0@example.com",
+        "phone": "100-200-300",
+        "owner": 4
+      }
+    },
+    {
+      "step": "contacts:get",
+      "status": 200,
+      "data": {
+        "id": "a99c632c-c04a-4e1d-bdea-8bcd0821f27c",
+        "name": "JS E2E",
+        "email": "c_test_1764670036944_97af89a0@example.com",
+        "phone": "100-200-300",
+        "favorite": false,
+        "owner": 4
+      }
+    },
+    {
+      "step": "contacts:update",
+      "status": 200,
+      "data": {
+        "id": "a99c632c-c04a-4e1d-bdea-8bcd0821f27c",
+        "name": "JS E2E Updated",
+        "email": "u_test_1764670036944_97af89a0@example.com",
+        "phone": "555-666-777",
+        "favorite": false,
+        "owner": 4
+      }
+    },
+    {
+      "step": "contacts:favorite",
+      "status": 200,
+      "data": {
+        "id": "a99c632c-c04a-4e1d-bdea-8bcd0821f27c",
+        "name": "JS E2E Updated",
+        "email": "u_test_1764670036944_97af89a0@example.com",
+        "phone": "555-666-777",
+        "favorite": true,
+        "owner": 4
+      }
+    },
+    {
+      "step": "contacts:list_favorites",
+      "status": 200,
+      "data": {
+        "count": 1
+      }
+    },
+    {
+      "step": "contacts:delete",
+      "status": 200,
+      "data": {
+        "id": "a99c632c-c04a-4e1d-bdea-8bcd0821f27c",
+        "name": "JS E2E Updated",
+        "email": "u_test_1764670036944_97af89a0@example.com",
+        "phone": "555-666-777",
+        "favorite": true,
+        "owner": 4
+      }
+    },
+    {
+      "step": "logout",
+      "status": 204
+    },
+    {
+      "step": "contacts:after_logout",
+      "status": 401
+    }
+  ]
+}

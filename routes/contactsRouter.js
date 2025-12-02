@@ -13,8 +13,12 @@ import {
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
 import { updateFavoriteSchema } from "../schemas/contactsSchemas.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const contactsRouter = express.Router();
+
+// Додаємо middleware authenticate до всіх роутів
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", getAllContacts);
 

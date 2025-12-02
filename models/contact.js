@@ -23,6 +23,10 @@ const Contact = sequelize.define('contact', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  owner: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  }
 }, {
   tableName: 'contacts',
   timestamps: false,
