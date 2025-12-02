@@ -12,8 +12,12 @@ export const registerUser = async (email, password) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email, { s: '250', r: 'pg', d: 'retro' }, true);
-  
+  const avatarURL = gravatar.url(
+    email,
+    { s: '250', r: 'pg', d: 'retro' },
+    true
+  );
+
   const newUser = await User.create({
     email,
     password: hashedPassword,

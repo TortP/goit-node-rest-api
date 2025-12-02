@@ -44,7 +44,9 @@ async function buildApp() {
 function assertStatus(step, res, expected) {
   if (res.status !== expected) {
     throw new Error(
-      `${step} failed: expected ${expected}, got ${res.status}; body=${JSON.stringify(res.body)}`
+      `${step} failed: expected ${expected}, got ${
+        res.status
+      }; body=${JSON.stringify(res.body)}`
     );
   }
 }
@@ -66,7 +68,9 @@ function createTestImage() {
   const password = 'Passw0rd!123';
 
   // 1) Register - should have gravatar avatarURL
-  let res = await request(app).post('/api/auth/register').send({ email, password });
+  let res = await request(app)
+    .post('/api/auth/register')
+    .send({ email, password });
   assertStatus('Register', res, 201);
   console.log(`✓ Register: ${res.status}`);
   console.log(`  Gravatar avatarURL: ${res.body.user?.avatarURL || 'N/A'}`);
@@ -105,7 +109,9 @@ function createTestImage() {
   if (res.body?.avatarURL) {
     const staticRes = await request(app).get(res.body.avatarURL);
     console.log(`✓ Static file serving: ${staticRes.status}`);
-    console.log(`  Content-Type: ${staticRes.headers['content-type'] || 'N/A'}\n`);
+    console.log(
+      `  Content-Type: ${staticRes.headers['content-type'] || 'N/A'}\n`
+    );
   }
 
   console.log('All avatar tests passed!');

@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     cb(null, tempDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}_${Math.round(Math.random() * 1E9)}`;
+    const uniqueSuffix = `${Date.now()}_${Math.round(Math.random() * 1e9)}`;
     const ext = path.extname(file.originalname);
     cb(null, `${file.fieldname}_${uniqueSuffix}${ext}`);
   },
@@ -19,7 +19,9 @@ const fileFilter = (req, file, cb) => {
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Only JPEG, JPG, PNG and GIF are allowed.'));
+    cb(
+      new Error('Invalid file type. Only JPEG, JPG, PNG and GIF are allowed.')
+    );
   }
 };
 
