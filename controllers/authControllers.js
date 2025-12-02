@@ -1,4 +1,6 @@
 import * as authServices from '../services/authServices.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 export const register = async (req, res, next) => {
   try {
@@ -72,6 +74,38 @@ export const updateSubscription = async (req, res, next) => {
 
     res.status(200).json(user);
   } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAvatarController = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const { path: tempPath, filename } = req.file;
+    const ext = path.extname(filename);
+    const newFilename = `${req.user.id}${ext}`;
+    const avatarsDir = path.resolve('public', 'avatars');
+    const finalPath = path.join(avatarsDir, newFilename);
+
+    // Переміщуємо файл з temp до public/avatars
+    await fs.rename(tempPath, finalPath);
+
+    const avatarURL = `/avatars/${newFilename}`;
+    const result = await authServices.updateAvatar(req.user.id, avatarURL);
+
+    if (!result) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    // Видаляємо temp файл у разі помилки
+    if (req.file?.path) {
+      await fs.unlink(req.file.path).catch(() => {});
+    }
     next(error);
   }
 };
