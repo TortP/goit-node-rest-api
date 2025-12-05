@@ -64,7 +64,9 @@ async function testEmailVerificationProduction() {
 
     console.log(`Verification token: ${verificationToken}`);
     console.log(`ПИСЬМО ВІДПРАВЛЕНО НА: ${email}`);
-    console.log(`Verification link: http://localhost:3000/api/auth/verify/${verificationToken}`);
+    console.log(
+      `Verification link: http://localhost:3000/api/auth/verify/${verificationToken}`
+    );
     console.log(`Email should arrive within 1-2 minutes\n`);
 
     // 2. Логін без верифікації (має бути 401)
@@ -76,15 +78,22 @@ async function testEmailVerificationProduction() {
     console.log(`Status: ${loginRes.status}`);
     console.log(`Body: ${JSON.stringify(loginRes.body)}`);
 
-    if (loginRes.status === 401 && loginRes.body.message === 'Email is not verified') {
+    if (
+      loginRes.status === 401 &&
+      loginRes.body.message === 'Email is not verified'
+    ) {
       console.log('OK: Login blocked without verification (401)\n');
     } else {
-      console.warn(`WARNING: Expected 401 "Email is not verified", got ${loginRes.status}`);
+      console.warn(
+        `WARNING: Expected 401 "Email is not verified", got ${loginRes.status}`
+      );
     }
 
     // 3. Вручну верифікуємо (імітуємо клацання посилання)
     console.log('3. VERIFY EMAIL (simulating link click)');
-    const verifyRes = await request(app).get(`/api/auth/verify/${verificationToken}`);
+    const verifyRes = await request(app).get(
+      `/api/auth/verify/${verificationToken}`
+    );
 
     console.log(`Status: ${verifyRes.status}`);
     console.log(`Body: ${JSON.stringify(verifyRes.body)}`);
