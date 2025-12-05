@@ -6,6 +6,8 @@ import {
   current,
   updateSubscription,
   updateAvatarController,
+  verifyEmailController,
+  resendVerificationEmailController,
 } from '../controllers/authControllers.js';
 import validateBody from '../helpers/validateBody.js';
 import upload from '../middlewares/upload.js';
@@ -22,6 +24,8 @@ authRouter.post('/register', validateBody(registerSchema), register);
 authRouter.post('/login', validateBody(loginSchema), login);
 authRouter.post('/logout', authenticate, logout);
 authRouter.get('/current', authenticate, current);
+authRouter.get('/verify/:verificationToken', verifyEmailController);
+authRouter.post('/verify', resendVerificationEmailController);
 authRouter.patch(
   '/subscription',
   authenticate,

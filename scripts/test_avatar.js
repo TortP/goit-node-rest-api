@@ -72,43 +72,53 @@ function createTestImage() {
     .post('/api/auth/register')
     .send({ email, password });
   assertStatus('Register', res, 201);
-  console.log(`✓ Register: ${res.status}`);
+  console.log(`OK: Register: ${res.status}`);
   console.log(`  Gravatar avatarURL: ${res.body.user?.avatarURL || 'N/A'}`);
 
-  // 2) Login
+  const verificationToken = res.body?.user?.verificationToken;
+  if (!verificationToken) {
+    throw new Error('No verificationToken returned in register response');
+  }
+
+  // 2) Verify email
+  res = await request(app).get(`/api/auth/verify/${verificationToken}`);
+  assertStatus('Verify email', res, 200);
+  console.log(`OK: Verify email: ${res.status}`);
+
+  // 3) Login
   res = await request(app).post('/api/auth/login').send({ email, password });
   assertStatus('Login', res, 200);
   const token = res.body?.token;
   if (!token) throw new Error('No token returned from login');
-  console.log(`✓ Login: ${res.status}\n`);
+  console.log(`OK: Login: ${res.status}\n`);
 
   const auth = { Authorization: `Bearer ${token}` };
 
-  // 3) Upload avatar
+  // 4) Upload avatar
   const testImage = createTestImage();
   res = await request(app)
     .patch('/api/auth/avatars')
     .set(auth)
     .attach('avatar', testImage, 'test.png');
   assertStatus('Upload avatar', res, 200);
-  console.log(`✓ Upload avatar: ${res.status}`);
+  console.log(`OK: Upload avatar: ${res.status}`);
   console.log(`  New avatarURL: ${res.body?.avatarURL || 'N/A'}`);
 
-  // 4) Verify avatar file exists
+  // 5) Verify avatar file exists
   if (res.body?.avatarURL) {
     const avatarPath = path.join('public', res.body.avatarURL);
     try {
       await fs.access(avatarPath);
-      console.log(`✓ Avatar file exists: ${avatarPath}\n`);
+      console.log(`OK: Avatar file exists: ${avatarPath}\n`);
     } catch {
-      console.log(`✗ Avatar file NOT found: ${avatarPath}\n`);
+      console.log(`FAIL: Avatar file NOT found: ${avatarPath}\n`);
     }
   }
 
-  // 5) Test static file serving
+  // 6) Test static file serving
   if (res.body?.avatarURL) {
     const staticRes = await request(app).get(res.body.avatarURL);
-    console.log(`✓ Static file serving: ${staticRes.status}`);
+    console.log(`OK: Static file serving: ${staticRes.status}`);
     console.log(
       `  Content-Type: ${staticRes.headers['content-type'] || 'N/A'}\n`
     );

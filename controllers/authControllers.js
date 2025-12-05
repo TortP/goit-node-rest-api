@@ -26,6 +26,10 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ message: 'Email or password is wrong' });
     }
 
+    if (result.notVerified) {
+      return res.status(401).json({ message: 'Email is not verified' });
+    }
+
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -106,6 +110,46 @@ export const updateAvatarController = async (req, res, next) => {
     if (req.file?.path) {
       await fs.unlink(req.file.path).catch(() => {});
     }
+    next(error);
+  }
+};
+
+export const verifyEmailController = async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+    const user = await authServices.verifyUserByToken(verificationToken);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Verification successful' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resendVerificationEmailController = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: 'missing required field email' });
+    }
+
+    const result = await authServices.resendVerification(email);
+
+    if (!result) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (result.alreadyVerified) {
+      return res
+        .status(400)
+        .json({ message: 'Verification has already been passed' });
+    }
+
+    return res.status(200).json({ message: 'Verification email sent' });
+  } catch (error) {
     next(error);
   }
 };
